@@ -1,9 +1,21 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.express as px
-import plotly.graph_objs as go
 from datetime import datetime, timedelta
+
+import streamlit as st
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+
+# handling plotly in cases where it's not intalled
+try:
+    import plotly.express as px
+    import plotly.graph_objs as go
+    plotly_available = True
+except ImportError:
+    st.warning("Plotly is not installed. Some visualizations may not display correctly.")
+    plotly_available = False
 
 def filter_dataframe(df, time_period, line_of_business, broker, sort_by):
     """
@@ -54,6 +66,7 @@ def create_renewals_insights_charts(filtered_df):
     # Create two columns for charts
     chart_col1, chart_col2 = st.columns(2)
 
+  if plotly_available:
     # Chart 1: Risk Score vs Premium Scatter Plot
     with chart_col1:
         st.subheader("Risk Score vs Premium")
@@ -82,6 +95,23 @@ def create_renewals_insights_charts(filtered_df):
         )
         fig2.update_layout(height=400)
         st.plotly_chart(fig2, use_container_width=True)
+
+else:
+        # Fallback visualizations using Streamlit's native charts
+        with chart_col1:
+            st.subheader("Risk Score vs Premium")
+            st.scatter_chart(
+                filtered_df, 
+                x='Risk_Score', 
+                y='Premium',
+                color='Priority'
+            )
+        
+        with chart_col2:
+            st.subheader("Rate Changes by Line of Business")
+            # Group by Line of Business and calculate mean rate change
+            lob_summary = filtered_df.groupby('Line_of_Business')['Rate_Change'].mean().reset_index()
+            st.bar_chart(lob_summary, x='Line_of_Business', y='Rate_Change')
 
 def run_triage_view():
     st.title("Renewals Triage")
