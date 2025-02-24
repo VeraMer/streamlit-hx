@@ -66,37 +66,36 @@ def create_renewals_insights_charts(filtered_df):
     # Create two columns for charts
     chart_col1, chart_col2 = st.columns(2)
 
-  if plotly_available:
-    # Chart 1: Risk Score vs Premium Scatter Plot
-    with chart_col1:
-        st.subheader("Risk Score vs Premium")
-        fig1 = px.scatter(
-            filtered_df, 
-            x='Risk_Score', 
-            y='Premium', 
-            color='Priority',
-            hover_data=['Policy_Ref', 'Insured'],
-            title='Risk Score vs Premium by Priority',
-            labels={'Risk_Score': 'Risk Score', 'Premium': 'Premium (£)'}
-        )
-        fig1.update_layout(height=400)
-        st.plotly_chart(fig1, use_container_width=True)
+    if plotly_available:
+        # Chart 1: Risk Score vs Premium Scatter Plot
+        with chart_col1:
+            st.subheader("Risk Score vs Premium")
+            fig1 = px.scatter(
+                filtered_df, 
+                x='Risk_Score', 
+                y='Premium', 
+                color='Priority',
+                hover_data=['Policy_Ref', 'Insured'],
+                title='Risk Score vs Premium by Priority',
+                labels={'Risk_Score': 'Risk Score', 'Premium': 'Premium (£)'}
+            )
+            fig1.update_layout(height=400)
+            st.plotly_chart(fig1, use_container_width=True)
 
-    # Chart 2: Rate Change Distribution by Line of Business
-    with chart_col2:
-        st.subheader("Rate Changes by Line of Business")
-        fig2 = px.box(
-            filtered_df, 
-            x='Line_of_Business', 
-            y='Rate_Change', 
-            color='Priority',
-            title='Rate Change Distribution',
-            labels={'Rate_Change': 'Rate Change', 'Line_of_Business': 'Line of Business'}
-        )
-        fig2.update_layout(height=400)
-        st.plotly_chart(fig2, use_container_width=True)
-
-else:
+        # Chart 2: Rate Change Distribution by Line of Business
+        with chart_col2:
+            st.subheader("Rate Changes by Line of Business")
+            fig2 = px.box(
+                filtered_df, 
+                x='Line_of_Business', 
+                y='Rate_Change', 
+                color='Priority',
+                title='Rate Change Distribution',
+                labels={'Rate_Change': 'Rate Change', 'Line_of_Business': 'Line of Business'}
+            )
+            fig2.update_layout(height=400)
+            st.plotly_chart(fig2, use_container_width=True)
+    else:
         # Fallback visualizations using Streamlit's native charts
         with chart_col1:
             st.subheader("Risk Score vs Premium")
